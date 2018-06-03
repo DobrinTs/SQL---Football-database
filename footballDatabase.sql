@@ -101,8 +101,8 @@ insert into Players values('0000000009', '7', 'Chelsea', 'Eden', 'Hazard', 25, 3
 select * from Players 
 
 --------------------------------------------------------------------------------------------------------------------------
-/* 1. Изведете отбора, имената и възрастта на всички футболисти, които живеят на 'Downtown Abbey, Manchester'
-и тренират на Old Trafford
+/* 1. РР·РІРµРґРµС‚Рµ РѕС‚Р±РѕСЂР°, РёРјРµРЅР°С‚Р° Рё РІСЉР·СЂР°СЃС‚С‚Р° РЅР° РІСЃРёС‡РєРё С„СѓС‚Р±РѕР»РёСЃС‚Рё, РєРѕРёС‚Рѕ Р¶РёРІРµСЏС‚ РЅР° 'Downtown Abbey, Manchester'
+Рё С‚СЂРµРЅРёСЂР°С‚ РЅР° Old Trafford
 */
 select TeamName, Fname, LName, Age
 from Players
@@ -110,37 +110,37 @@ where Address = 'Downtown Abbey, Manchester'
 	and TeamName in (select TeamName from TeamGrounds where GroundName = 'Old Trafford')
 	
 
-/* 2. Изведете името на мениджърът начело на отбора, в който играе Harry Kane
+/* 2. РР·РІРµРґРµС‚Рµ РёРјРµС‚Рѕ РЅР° РјРµРЅРёРґР¶СЉСЂСЉС‚ РЅР°С‡РµР»Рѕ РЅР° РѕС‚Р±РѕСЂР°, РІ РєРѕР№С‚Рѕ РёРіСЂР°Рµ Harry Kane
 */
 select m.Name
 from Players p join Teams t on p.TeamName = t.Name and p.Fname='Harry' and p.LName='Kane' 
 	join Managers m on t.ManagerSsn = m.Ssn
 
 
-/* 3. За всеки отбор, в който има поне един играч, изведете името на отбора, общата заплата, която плаща на играчи,
-и заплатата, която плаща на мениджър
+/* 3. Р—Р° РІСЃРµРєРё РѕС‚Р±РѕСЂ, РІ РєРѕР№С‚Рѕ РёРјР° РїРѕРЅРµ РµРґРёРЅ РёРіСЂР°С‡, РёР·РІРµРґРµС‚Рµ РёРјРµС‚Рѕ РЅР° РѕС‚Р±РѕСЂР°, РѕР±С‰Р°С‚Р° Р·Р°РїР»Р°С‚Р°, РєРѕСЏС‚Рѕ РїР»Р°С‰Р° РЅР° РёРіСЂР°С‡Рё,
+Рё Р·Р°РїР»Р°С‚Р°С‚Р°, РєРѕСЏС‚Рѕ РїР»Р°С‰Р° РЅР° РјРµРЅРёРґР¶СЉСЂ
 */
 select TeamName, sum(p.salary) as PlayerSalaries, max(m.salary) as ManagerSalary
 from Players p join Teams t on p.TeamName = t.Name join Managers m on t.ManagerSsn = m.Ssn
 group by TeamName
 
 
-/* 4. За всеки изигран мач, в който има двама футболисти с един и същ номер, изкарайте имената на двата отбора,
-номера и имената на тези футболисти
+/* 4. Р—Р° РІСЃРµРєРё РёР·РёРіСЂР°РЅ РјР°С‡, РІ РєРѕР№С‚Рѕ РёРјР° РґРІР°РјР° С„СѓС‚Р±РѕР»РёСЃС‚Рё СЃ РµРґРёРЅ Рё СЃСЉС‰ РЅРѕРјРµСЂ, РёР·РєР°СЂР°Р№С‚Рµ РёРјРµРЅР°С‚Р° РЅР° РґРІР°С‚Р° РѕС‚Р±РѕСЂР°, 
+РЅРѕРјРµСЂР° Рё РёРјРµРЅР°С‚Р° РЅР° С‚РµР·Рё С„СѓС‚Р±РѕР»РёСЃС‚Рё
 */
 select m.HomeTeamName, m.AwayTeamName, pht.KitNumber, pht.Fname, pht.LName, pat.Fname, pat.LName
 from Matches m join Players pht on pht.TeamName = m.HomeTeamName join Players pat on pat.TeamName = m.AwayTeamName
 where pht.KitNumber = pat.KitNumber
 
 
-/* 5. За всеки мениджър, различен от специалния запис 'Vacated', изведете всички играчи, които той ръководи.
- Ако за някой мениджър няма нито един играч да се изписва NULL
+/* 5. Р—Р° РІСЃРµРєРё РјРµРЅРёРґР¶СЉСЂ, СЂР°Р·Р»РёС‡РµРЅ РѕС‚ СЃРїРµС†РёР°Р»РЅРёСЏС‚ Р·Р°РїРёСЃ 'Vacated', РёР·РІРµРґРµС‚Рµ РІСЃРёС‡РєРё РёРіСЂР°С‡Рё, РєРѕРёС‚Рѕ С‚РѕР№ СЂСЉРєРѕРІРѕРґРё.
+РђРєРѕ Р·Р° РЅСЏРєРѕР№ РјРµРЅРёРґР¶СЉСЂ РЅСЏРјР° РЅРёС‚Рѕ РµРґРёРЅ РёРіСЂР°С‡ РґР° СЃРµ РёР·РїРёСЃРІР° NULL
 */
 select m.Name, p.Fname, p.LName
 from Managers m left join Teams t on m.Ssn = t.ManagerSsn left join Players p on t.Name = p.TeamName
 where m.Name != 'Vacated'
 
-/* 6. За всеки играч изкарайте всички резултати от мачовете на неговия отбор.
+/* 6. Р—Р° РІСЃРµРєРё РёРіСЂР°С‡ РёР·РєР°СЂР°Р№С‚Рµ РІСЃРёС‡РєРё СЂРµР·СѓР»С‚Р°С‚Рё РЅР° РјР°С‡РѕРІРµС‚Рµ РЅР° РЅРµРіРѕРІРёСЏС‚ РѕС‚Р±РѕСЂ
 */
 select p.Fname, p.LName, t.Name as PlaysIn, m.*
 from Players p join Teams t on p.TeamName = t.Name join Matches m on (t.Name = m.HomeTeamName OR t.Name = m.AwayTeamName)
